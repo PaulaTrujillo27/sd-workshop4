@@ -1,78 +1,25 @@
-# <b> *First WorkShop Distribuidos* </b>
-
-
+# <b> *Fourth WorkShop Distribuidos* </b>
 
 ## <b> STEP BY STEP </b> 
 
+To set up DNS resolution for microservices, follow these steps:
 
-Fork and clone the next repo:
-*git clone* https://github.com/icesi-ops/training_microservices.git
+1. Begin by installing the dnsmasq service, which facilitates DNS functionality.
 
-# *Login*
+2. Next, create a configuration file named '10-consul' within the directory etc/dnsmasq.d. In this file, specify the server address with the loopback IP and port. For instance:
 
-- sudo docker login
+      Server=/consul/127.0.0.1#8600
+   
+3.Restart the dnsmasq service to apply the changes made in the configuration file.
+4. Modify the resolv.conf file to enable DNS resolution for services hosted on the local machine. Add the following line to the file:
 
+      nameserver 127.0.0.1
+      
+5.Verify that the DNS service is correctly resolving the IP addresses of each microservice. Use the command dig .service.consul in the terminal. Ensure that the localhost address (127.0.0.1) and port (8500) are accessible through the browser
 
-# *Create a network for microservices*
+## <b> Microservices registered in Consul </b> 
 
-- docker network create distribuidos
-
-# * Enter to the corresponding folders to begin the configurations*
-
-- cd training_microservices/
-
-- cd pay-app-spring-microservices/
-
-- cd app-config/
-
-
-# *Change Dockerfile to app-config/ port to 8888*
-
-- vi Dockerfile cambiar al puerto 8888
-
-
-# *Consul Microservice Deployment* 
-
-- docker run -d -p 8500:8500 -p 8600:8600/udp --network distribuidos --name consul consul:1.15 agent -server -bootstrap-expect 1 -ui -data-dir /tmp -client=0.0.0.0
-
-
-# *Kafka Microservice Deployment*
-
-- docker run -p 2181:2181 -d -p 9092:9092 --name servicekafka --network distribuidos -e ADVERTISED_HOST=servicekafka -e NUM_PARTITIONS=3 johnnypark/kafka-zookeeper:2.6.0
-
-
-# *Postgres Database Deployment*
-
-- sudo docker run -p 5434:5432  --name postgres --network distribuidos -e POSTGRES_PASSWORD=postgres -e  POSTGRES_DB=db_invoice -d postgres:12-alpine
-
-
-# *Build app-config image*
-
-- docker build -t paulatrujillo/app-config:0.0.1 .
-
-# *Run app-config image*
-
-- docker run -d -p 8888:8888 --network distribuidos --name app-config paulatrujillo/app-config:0.0.1 .
-
-
-# *Build app-invoice image*
-
-- sudo docker build -t paulatrujillo/app-invoice:0.0.1 .
-
-
-# *Run app-invoice image*
-
-- docker run -d -p 8006:8006 --network distribuidos --name app-invoice paulatrujillo/app-invoice:0.0.1 .
-
-
-
-## <b> Built with </b> 🛠
-
-
-+ [Docker](https://www.docker.com/) - Docker is an open platform for developing, shipping, and running applications.
-
-
-
+![image](https://github.com/PaulaTrujillo27/sd-workshop4/assets/71205932/14e91c91-9f94-405d-865d-cd26dc4757ca)
 
 ## <b> By: </b>
 
